@@ -73,8 +73,17 @@ public class CoordManager {
 		return blockX - this.x;
 	}
 
+	// Adjust the block X position before sending
+	public double prepareSendX(double blockX) {
+		return blockX - this.x;
+	}
+
 	// Adjust the block Z position before sending
 	public int prepareSendZ(int blockZ) {
+		return blockZ - this.z;
+	}
+
+	public double prepareSendZ(double blockZ) {
 		return blockZ - this.z;
 	}
 

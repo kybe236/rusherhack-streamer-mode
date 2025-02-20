@@ -1,17 +1,17 @@
 package org.kybe.mixins;
 
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
-import net.minecraft.world.entity.PositionMoveRotation;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ClientboundPlayerPositionPacket.class)
 public interface IMixinClientboundPlayerPositionPacket {
-	@Accessor("change")
-	PositionMoveRotation getChange();
-
-	@Accessor("change")
+	@Accessor("x")
 	@Mutable
-	void setChange(PositionMoveRotation change);
+	void setX(double x);
+
+	@Accessor("z")
+	@Mutable
+	void setZ(double z);
 }

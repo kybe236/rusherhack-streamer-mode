@@ -8,7 +8,11 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(ClientboundExplodePacket.class)
 public interface IMixinClientboundExplodePacket {
-	@Accessor("center")
+	@Accessor("x")
 	@Mutable
-	void setCenter(Vec3 center);
+	void setX(double x);
+
+	@Accessor("z")
+	@Mutable
+	void setZ(double z);
 }

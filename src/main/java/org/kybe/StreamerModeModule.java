@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import org.kybe.utils.CoordManager;
 import org.rusherhack.client.api.feature.module.ModuleCategory;
 import org.rusherhack.client.api.feature.module.ToggleableModule;
+import org.rusherhack.core.setting.BooleanSetting;
 import org.rusherhack.core.setting.EnumSetting;
 import org.rusherhack.core.setting.NullSetting;
 import org.rusherhack.core.setting.NumberSetting;
@@ -14,11 +15,14 @@ import org.rusherhack.core.setting.NumberSetting;
 
 public class StreamerModeModule extends ToggleableModule {
 	public static StreamerModeModule INSTANCE;
+	public BooleanSetting hideCoordinates = new BooleanSetting("Hide Coordinates", false);
 	public EnumSetting<OffsetMode> offsetMode = new EnumSetting<>("Offset Mode", OffsetMode.STATIC_OFFSET);
 	public EnumSetting<OffsetRandom> offsetRandom = new EnumSetting<>("Offset Random", OffsetRandom.NOT);
 	public NullSetting hidden = new NullSetting("WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!", "WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!");
 	public NumberSetting<Integer> xOffset = new NumberSetting<>("X Offset", 0, -30000000, 30000000);
 	public NumberSetting<Integer> zOffset = new NumberSetting<>("Z Offset", 0, -30000000, 30000000);
+
+	public BooleanSetting turnBedrockIntoStoneOrNetherrack = new BooleanSetting("Turn Bedrock into Stone/Netherack", false);
 	CoordManager coordManager = null;
 	public StreamerModeModule() {
 		super("Streamer Mode", "Provides Utilities for streamers like offsetting your coordinates.", ModuleCategory.CLIENT);
@@ -29,7 +33,16 @@ public class StreamerModeModule extends ToggleableModule {
 				zOffset
 		);
 
-		this.registerSettings(offsetMode, offsetRandom, hidden);
+		hideCoordinates.addSubSettings(
+				offsetMode,
+				offsetRandom,
+				hidden
+		);
+
+		this.registerSettings(
+				hideCoordinates,
+				turnBedrockIntoStoneOrNetherrack
+		);
 	}
 
 	@Override
@@ -42,7 +55,7 @@ public class StreamerModeModule extends ToggleableModule {
 	}
 
 	public void packetReceived(Packet<?> packet) {
-		if (!this.isToggled()) {
+		if (!this.isToggled() || !this.hideCoordinates.getValue()) {
 			this.coordManager = null;
 			return;
 		}
@@ -61,13 +74,13 @@ public class StreamerModeModule extends ToggleableModule {
 			for (Packet<? super ClientGamePacketListener> p : packet1.subPackets()) {
 				if (this.coordManager == null && this.offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN && p instanceof ClientboundPlayerPositionPacket packet2) {
 					if (this.offsetRandom.getValue() == OffsetRandom.NOT) {
-						this.coordManager = new CoordManager((int) -(packet2.change().position().x) + xOffset.getValue(), (int) -(packet2.change().position().z) + zOffset.getValue());
+						this.coordManager = new CoordManager((int) -(packet2.getX()) + xOffset.getValue(), (int) -(packet2.getZ()) + zOffset.getValue());
 					} else if (this.offsetRandom.getValue() == OffsetRandom.EVERY_JOIN) {
 						int x = (int) (Math.random() * 30000000);
 						int z = (int) (Math.random() * 30000000);
 						this.xOffset.setValue(x);
 						this.zOffset.setValue(z);
-						this.coordManager = new CoordManager(x + (int) -(packet2.change().position().x), z + (int) -(packet2.change().position().z));
+						this.coordManager = new CoordManager(x + (int) -(packet2.getX()), z + (int) -(packet2.getZ()));
 					}
 				}
 				if (this.coordManager == null) {
@@ -79,13 +92,13 @@ public class StreamerModeModule extends ToggleableModule {
 		}
 		if (this.coordManager == null && this.offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN && packet instanceof ClientboundPlayerPositionPacket packet2) {
 			if (this.offsetRandom.getValue() == OffsetRandom.NOT) {
-				this.coordManager = new CoordManager((int) -(packet2.change().position().x) + xOffset.getValue(), (int) -(packet2.change().position().z) + zOffset.getValue());
+				this.coordManager = new CoordManager((int) -(packet2.getX()) + xOffset.getValue(), (int) -(packet2.getZ()) + zOffset.getValue());
 			} else if (this.offsetRandom.getValue() == OffsetRandom.EVERY_JOIN) {
 				int x = (int) (Math.random() * 30000000);
 				int z = (int) (Math.random() * 30000000);
 				this.xOffset.setValue(x);
 				this.zOffset.setValue(z);
-				this.coordManager = new CoordManager(x + (int) -(packet2.change().position().x), z + (int) -(packet2.change().position().z));
+				this.coordManager = new CoordManager(x + (int) -(packet2.getX()), z + (int) -(packet2.getZ()));
 			}
 		}
 		if (coordManager == null) {
@@ -96,7 +109,7 @@ public class StreamerModeModule extends ToggleableModule {
 	}
 
 	public void packetSend(Packet<?> packet) {
-		if (!this.isToggled()) {
+		if (!this.isToggled() || !this.hideCoordinates.getValue()) {
 			this.coordManager = null;
 			return;
 		}

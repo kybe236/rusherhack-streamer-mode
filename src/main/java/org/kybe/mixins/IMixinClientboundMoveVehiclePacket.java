@@ -1,12 +1,12 @@
 package org.kybe.mixins;
 
-import net.minecraft.network.protocol.game.ClientboundTeleportEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundMoveVehiclePacket;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(ClientboundTeleportEntityPacket.class)
-public interface IMixinClientboundTeleportEntityPacket {
+@Mixin(ClientboundMoveVehiclePacket.class)
+public interface IMixinClientboundMoveVehiclePacket {
 	@Accessor("x")
 	@Mutable
 	void setX(double x);

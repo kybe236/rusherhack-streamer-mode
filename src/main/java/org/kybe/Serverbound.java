@@ -22,8 +22,6 @@ public class Serverbound {
 			serverboundMovePlayerPacket(packet1, coordManager);
 		} else if (packet instanceof ServerboundMoveVehiclePacket packet1) {
 			serverboundMoveVehiclePacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundPickItemFromBlockPacket packet1) {
-			serverboundPickItemFromBlockPacket(packet1, coordManager);
 		} else if (packet instanceof ServerboundSetCommandBlockPacket packet1) {
 			serverboundSetCommandBlockPacket(packet1, coordManager);
 		} else if (packet instanceof ServerboundSetJigsawBlockPacket packet1) {
@@ -65,15 +63,13 @@ public class Serverbound {
 	}
 
 	public static void serverboundMoveVehiclePacket(ServerboundMoveVehiclePacket packet, CoordManager coordManager) {
-		Vec3 pos = packet.position();
-		pos = coordManager.prepareSendVec3(pos);
-		((IMixinServerboundMoveVehiclePacket) (Object) packet).setPosition(pos);
-	}
+		double x = packet.getX();
+		double z = packet.getZ();
+		x = coordManager.prepareSendX(x);
+		z = coordManager.prepareSendZ(z);
+		((IMixinServerboundMoveVehiclePacket) packet).setX(x);
+		((IMixinServerboundMoveVehiclePacket) packet).setZ(z);
 
-	public static void serverboundPickItemFromBlockPacket(ServerboundPickItemFromBlockPacket packet, CoordManager coordManager) {
-		BlockPos pos = packet.pos();
-		pos = coordManager.prepareSendBlockPos(pos);
-		((IMixinServerboundPickItemFromBlockPacket) (Object) packet).setPos(pos);
 	}
 
 	public static void serverboundSetCommandBlockPacket(ServerboundSetCommandBlockPacket packet, CoordManager coordManager) {
