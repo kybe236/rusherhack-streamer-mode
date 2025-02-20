@@ -9,6 +9,9 @@ public class Main extends Plugin {
 	public void onLoad() {
 		final CoordSpoofer coordSpoofer = new CoordSpoofer();
 		RusherHackAPI.getModuleManager().registerFeature(coordSpoofer);
+
+		final OffsetCommand offsetCommand = new OffsetCommand();
+		RusherHackAPI.getCommandManager().registerFeature(offsetCommand);
 	}
 
 	@Override
