@@ -47,6 +47,10 @@ public class CoordSpoofer extends ToggleableModule {
 	}
 
 	public void packetReceived(Packet<?> packet) {
+		if (!this.isToggled()) {
+			this.coordManager = null;
+			return;
+		}
 		if (this.coordManager == null && this.offsetMode.getValue() == OffsetMode.STATIC_OFFSET) {
 			if (this.offsetRandom.getValue() == OffsetRandom.NOT) {
 				this.coordManager = new CoordManager(xOffset.getValue(), zOffset.getValue());
@@ -97,6 +101,10 @@ public class CoordSpoofer extends ToggleableModule {
 	}
 
 	public void packetSend(Packet<?> packet) {
+		if (!this.isToggled()) {
+			this.coordManager = null;
+			return;
+		}
 		if (this.coordManager == null) return;
 		Serverbound.handle(coordManager, packet);
 	}
