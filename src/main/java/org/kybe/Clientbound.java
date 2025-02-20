@@ -92,6 +92,9 @@ public class Clientbound {
 			case ClientboundMoveMinecartPacket packet1 -> {
 				clientboundMoveMinecartPacket(packet1, manager);
 			}
+			case ClientboundInitializeBorderPacket packet1 -> {
+				clientboundInitializeBorderPacket(packet1, manager);
+			}
 			default -> {
 			}
 		}
@@ -239,6 +242,15 @@ public class Clientbound {
 		z = coordManager.prepareReceiveZ(z);
 		((IMixinClientboundSetBorderCenterPacket) packet).setNewCenterX(x);
 		((IMixinClientboundSetBorderCenterPacket) packet).setNewCenterZ(z);
+	}
+
+	public static void clientboundInitializeBorderPacket(ClientboundInitializeBorderPacket packet, CoordManager coordManager) {
+		double x = packet.getNewCenterX();
+		double z = packet.getNewCenterZ();
+		x = coordManager.prepareReceiveX(x);
+		z = coordManager.prepareReceiveZ(z);
+		((IMixinClientboundInitializeBorderPacket) packet).setNewCenterX(x);
+		((IMixinClientboundInitializeBorderPacket) packet).setNewCenterZ(z);
 	}
 
 	public static void clientboundSetChunkCacheCenterPacket(ClientboundSetChunkCacheCenterPacket packet, CoordManager coordManager) {

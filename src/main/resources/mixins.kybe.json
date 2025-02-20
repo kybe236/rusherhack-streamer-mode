@@ -17,6 +17,7 @@
     "IMixinClientboundEntityPositionSyncPacket",
     "IMixinClientboundExplodePacket",
     "IMixinClientboundForgetLevelChunkPacket",
+    "IMixinClientboundInitializeBorderPacket",
     "IMixinClientboundLevelChunkPacketData",
     "IMixinClientboundLevelChunkWithLightPacket",
     "IMixinClientboundLevelParticlesPacket",

@@ -47,9 +47,6 @@ public class CoordSpoofer extends ToggleableModule {
 	}
 
 	public void packetReceived(Packet<?> packet) {
-		if (packet instanceof ClientboundDisconnectPacket) {
-			coordManager = null;
-		}
 		if (this.coordManager == null && this.offsetMode.getValue() == OffsetMode.STATIC_OFFSET) {
 			if (this.offsetRandom.getValue() == OffsetRandom.NOT) {
 				this.coordManager = new CoordManager(xOffset.getValue(), zOffset.getValue());
