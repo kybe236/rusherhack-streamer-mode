@@ -6,7 +6,6 @@ import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import org.kybe.utils.CoordManager;
-import org.rusherhack.client.api.events.client.EventTimerSpeed;
 import org.rusherhack.client.api.events.client.EventUpdate;
 import org.rusherhack.client.api.feature.module.ModuleCategory;
 import org.rusherhack.client.api.feature.module.ToggleableModule;
@@ -44,6 +43,7 @@ public class CoordSpoofer extends ToggleableModule {
 	@Subscribe
 	public void onTick(EventUpdate event) {
 		if (mc.getConnection() == null) coordManager = null;
+		if (!mc.getConnection().getConnection().isConnected()) coordManager = null;
 	}
 
 	public void packetReceived(Packet<?> packet) {
