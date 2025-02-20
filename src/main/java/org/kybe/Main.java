@@ -7,8 +7,8 @@ public class Main extends Plugin {
 
 	@Override
 	public void onLoad() {
-		final CoordSpoofer coordSpoofer = new CoordSpoofer();
-		RusherHackAPI.getModuleManager().registerFeature(coordSpoofer);
+		final StreamerModeModule streamerModeModule = new StreamerModeModule();
+		RusherHackAPI.getModuleManager().registerFeature(streamerModeModule);
 
 		final OffsetCommand offsetCommand = new OffsetCommand();
 		RusherHackAPI.getCommandManager().registerFeature(offsetCommand);

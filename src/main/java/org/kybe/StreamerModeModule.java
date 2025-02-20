@@ -1,32 +1,27 @@
 package org.kybe;
 
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.common.ClientboundDisconnectPacket;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import org.kybe.utils.CoordManager;
-import org.rusherhack.client.api.events.client.EventTimerSpeed;
-import org.rusherhack.client.api.events.client.EventUpdate;
-import org.rusherhack.client.api.events.client.input.EventInputTick;
 import org.rusherhack.client.api.feature.module.ModuleCategory;
 import org.rusherhack.client.api.feature.module.ToggleableModule;
-import org.rusherhack.core.event.subscribe.Subscribe;
 import org.rusherhack.core.setting.EnumSetting;
 import org.rusherhack.core.setting.NullSetting;
 import org.rusherhack.core.setting.NumberSetting;
 
 
-public class CoordSpoofer extends ToggleableModule {
-	public static CoordSpoofer INSTANCE;
+public class StreamerModeModule extends ToggleableModule {
+	public static StreamerModeModule INSTANCE;
 	public EnumSetting<OffsetMode> offsetMode = new EnumSetting<>("Offset Mode", OffsetMode.STATIC_OFFSET);
 	public EnumSetting<OffsetRandom> offsetRandom = new EnumSetting<>("Offset Random", OffsetRandom.NOT);
 	public NullSetting hidden = new NullSetting("WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!", "WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!");
 	public NumberSetting<Integer> xOffset = new NumberSetting<>("X Offset", 0, -30000000, 30000000);
 	public NumberSetting<Integer> zOffset = new NumberSetting<>("Z Offset", 0, -30000000, 30000000);
 	CoordManager coordManager = null;
-	public CoordSpoofer() {
-		super("Coord Offset", "Offsets your coordinate so no on knows where you are", ModuleCategory.CLIENT);
+	public StreamerModeModule() {
+		super("Streamer Mode", "Provides Utilities for streamers like offsetting your coordinates.", ModuleCategory.CLIENT);
 		INSTANCE = this;
 
 		hidden.addSubSettings(

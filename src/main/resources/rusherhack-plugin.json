@@ -2,7 +2,7 @@
   "Plugin-Class": "org.kybe.Main",
   "Name": "${project.plugin_name}",
   "Version": "${project.plugin_version}",
-  "Description": "Spoofs the Coordinates clientside",
+  "Description": "Provides Streamer Utilities",
   "Authors": [
     "kybe236"
   ],
