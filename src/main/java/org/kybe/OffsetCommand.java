@@ -11,17 +11,37 @@ public class OffsetCommand extends Command {
 
 	@CommandExecutor(subCommand = "toReal")
 	@CommandExecutor.Argument(value = {"int", "int"})
-	public void toReal(Integer x, Integer z) {
+	public String toReal(Integer x, Integer z) {
 		int real_x = CoordSpoofer.INSTANCE.coordManager.prepareSendX(x);
 		int real_z = CoordSpoofer.INSTANCE.coordManager.prepareSendZ(z);
-		ChatUtils.print("Real coords: " + real_x + " " + real_z);
+		return "Real coords: " + real_x + " " + real_z;
+	}
+
+	@CommandExecutor(subCommand = "toReal")
+	public String toReal() {
+		if (mc.player == null) {
+			return "You need to be in a world to use this command";
+		}
+		int real_x = CoordSpoofer.INSTANCE.coordManager.prepareSendX(mc.player.blockPosition().getX());
+		int real_z = CoordSpoofer.INSTANCE.coordManager.prepareSendZ(mc.player.blockPosition().getZ());
+		return "Real coords: " + real_x + " " + real_z;
 	}
 
 	@CommandExecutor(subCommand = "toFake")
 	@CommandExecutor.Argument(value = {"int", "int"})
-	public void toFake(Integer x, Integer z) {
+	public String toFake(Integer x, Integer z) {
 		int fake_x = CoordSpoofer.INSTANCE.coordManager.prepareReceiveX(x);
 		int fake_z = CoordSpoofer.INSTANCE.coordManager.prepareReceiveZ(z);
-		ChatUtils.print("Fake coords: " + fake_x + " " + fake_z);
+		return "Fake coords: " + fake_x + " " + fake_z;
+	}
+
+	@CommandExecutor(subCommand = "toFake")
+	public String toFake() {
+		if (mc.player == null) {
+			return "You need to be in a world to use this command";
+		}
+		int fake_x = CoordSpoofer.INSTANCE.coordManager.prepareReceiveX(mc.player.blockPosition().getX());
+		int fake_z = CoordSpoofer.INSTANCE.coordManager.prepareReceiveZ(mc.player.blockPosition().getZ());
+		return "Fake coords: " + fake_x + " " + fake_z;
 	}
 }
