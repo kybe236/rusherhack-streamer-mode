@@ -15,11 +15,15 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinConnection {
 	@Inject(method = "genericsFtw", at = @At("HEAD"))
 	private static void genericsFtw(Packet<?> packet, PacketListener listener, CallbackInfo ci) {
-		StreamerModeModule.INSTANCE.packetReceived(packet);
+		if (StreamerModeModule.INSTANCE != null) {
+			StreamerModeModule.INSTANCE.packetReceived(packet);
+		}
 	}
 
 	@Inject(method = "sendPacket", at = @At("HEAD"))
 	public void send(Packet<?> packet, @Nullable PacketSendListener packetSendListener, boolean bl, CallbackInfo ci) {
-		StreamerModeModule.INSTANCE.packetSend(packet);
+		if (StreamerModeModule.INSTANCE != null) {
+			StreamerModeModule.INSTANCE.packetSend(packet);
+		}
 	}
 }

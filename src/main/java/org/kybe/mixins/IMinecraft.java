@@ -12,6 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class IMinecraft {
 	@Inject(method = "disconnect(Lnet/minecraft/client/gui/screens/Screen;Z)V", at = @At("HEAD"))
 	private void disconnect(Screen screen, boolean bl, CallbackInfo ci) {
-		StreamerModeModule.INSTANCE.disconnect();
+		if (StreamerModeModule.INSTANCE != null) {
+			StreamerModeModule.INSTANCE.disconnect();
+		}
 	}
 }
