@@ -7,6 +7,7 @@ import net.minecraft.network.protocol.game.ClientboundPlayerPositionPacket;
 import org.kybe.utils.CoordManager;
 import org.rusherhack.client.api.feature.module.ModuleCategory;
 import org.rusherhack.client.api.feature.module.ToggleableModule;
+import org.rusherhack.core.setting.BooleanSetting;
 import org.rusherhack.core.setting.EnumSetting;
 import org.rusherhack.core.setting.NullSetting;
 import org.rusherhack.core.setting.NumberSetting;
@@ -14,11 +15,14 @@ import org.rusherhack.core.setting.NumberSetting;
 
 public class StreamerModeModule extends ToggleableModule {
 	public static StreamerModeModule INSTANCE;
+	public BooleanSetting hideCoordinates = new BooleanSetting("Hide Coordinates", false);
 	public EnumSetting<OffsetMode> offsetMode = new EnumSetting<>("Offset Mode", OffsetMode.STATIC_OFFSET);
 	public EnumSetting<OffsetRandom> offsetRandom = new EnumSetting<>("Offset Random", OffsetRandom.NOT);
 	public NullSetting hidden = new NullSetting("WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!", "WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!");
 	public NumberSetting<Integer> xOffset = new NumberSetting<>("X Offset", 0, -30000000, 30000000);
 	public NumberSetting<Integer> zOffset = new NumberSetting<>("Z Offset", 0, -30000000, 30000000);
+
+	public BooleanSetting turnBedrockIntoStoneOrNetherrack = new BooleanSetting("Turn Bedrock into Stone/Netherack", false);
 	CoordManager coordManager = null;
 	public StreamerModeModule() {
 		super("Streamer Mode", "Provides Utilities for streamers like offsetting your coordinates.", ModuleCategory.CLIENT);
@@ -29,7 +33,16 @@ public class StreamerModeModule extends ToggleableModule {
 				zOffset
 		);
 
-		this.registerSettings(offsetMode, offsetRandom, hidden);
+		hideCoordinates.addSubSettings(
+				offsetMode,
+				offsetRandom,
+				hidden
+		);
+
+		this.registerSettings(
+				hideCoordinates,
+				turnBedrockIntoStoneOrNetherrack
+		);
 	}
 
 	@Override

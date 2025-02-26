@@ -1,5 +1,6 @@
 package org.kybe;
 
+import net.minecraft.client.Minecraft;
 import org.rusherhack.client.api.RusherHackAPI;
 import org.rusherhack.client.api.plugin.Plugin;
 
