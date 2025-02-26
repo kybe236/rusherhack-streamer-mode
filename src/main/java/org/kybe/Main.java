@@ -4,6 +4,10 @@ import net.minecraft.client.Minecraft;
 import org.rusherhack.client.api.RusherHackAPI;
 import org.rusherhack.client.api.plugin.Plugin;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
+
 public class Main extends Plugin {
 
 	@Override
