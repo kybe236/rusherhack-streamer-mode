@@ -6,12 +6,14 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.kybe.StreamerModeModule;
 import org.kybe.utils.MapUtil;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 import java.io.IOException;
 
 @Mixin(ClientLevel.class)
 public class IClientLevel {
+	@Unique
 	int tick = 0;
 
 	@ModifyReturnValue(method = "getMapData", at = @At("RETURN"))

@@ -5,8 +5,6 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BlockEntityInfo",
-    "IAbstractSignRenderer",
-    "IMinecraft",
     "IMixinBlockHitResult",
     "IMixinClientboundAddEntityPacket",
     "IMixinClientboundAddExperienceOrbPacket",
@@ -16,7 +14,6 @@
     "IMixinClientboundBlockUpdatePacket",
     "IMixinClientboundChunksBiomesPacket",
     "IMixinClientboundDamageEventPacket",
-    "IMixinClientboundEntityPositionSyncPacket",
     "IMixinClientboundExplodePacket",
     "IMixinClientboundForgetLevelChunkPacket",
     "IMixinClientboundInitializeBorderPacket",
@@ -25,7 +22,7 @@
     "IMixinClientboundLevelParticlesPacket",
     "IMixinClientboundLightUpdatePacket",
     "IMixinClientboundMoveEntityPacket",
-    "IMixinClientboundMoveMinecartPacket",
+    "IMixinClientboundMoveVehiclePacket",
     "IMixinClientboundOpenSignEditorPacket",
     "IMixinClientboundPlayerLookAtPacket",
     "IMixinClientboundPlayerPositionPacket",
@@ -38,11 +35,8 @@
     "IMixinHitResult",
     "IMixinIMixinClientboundBlockEntityDataPacket",
     "IMixinInteractionAtLocationAction",
-    "IMixinMinecartStep",
-    "IMixinPositionMoveRotation",
     "IMixinServerboundBlockEntityTagQueryPacket",
     "IMixinServerboundJigsawGeneratePacket",
-    "IMixinServerboundPickItemFromBlockPacket",
     "IMixinServerboundPlayerActionPacket",
     "IMixinServerboundSetCommandBlockPacket",
     "IMixinServerboundSetJigsawBlockPacket",
@@ -51,6 +45,9 @@
     "MixinConnection"
   ],
   "client": [
-    "IClientLevel"
+    "IBlockRenderDispatcher",
+    "IClientLevel",
+    "IMinecraft",
+    "ISignRenderer"
   ]
 }
