@@ -2,6 +2,7 @@ package org.kybe.mixins;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MapRenderer;
 import org.kybe.StreamerModeModule;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

@@ -25,7 +25,7 @@ public class StreamerModeModule extends ToggleableModule {
 	public BooleanSetting turnBedrockIntoStoneOrNetherrack = new BooleanSetting("Turn Bedrock into Stone/Netherack", false);
 
 	public BooleanSetting hideSignText = new BooleanSetting("Hide Sign Text", false);
-	public BooleanSetting hideMapContents = new BooleanSetting("Hide Map Contents", false);
+	public BooleanSetting hideMap = new BooleanSetting("Hide Map Contents", false);
 
 	CoordManager coordManager = null;
 	public StreamerModeModule() {
@@ -47,7 +47,7 @@ public class StreamerModeModule extends ToggleableModule {
 				hideCoordinates,
 				turnBedrockIntoStoneOrNetherrack,
 				hideSignText,
-				hideMapContents
+				hideMap
 		);
 	}
 
