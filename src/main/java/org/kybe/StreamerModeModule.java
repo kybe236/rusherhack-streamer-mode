@@ -23,6 +23,10 @@ public class StreamerModeModule extends ToggleableModule {
 	public NumberSetting<Integer> zOffset = new NumberSetting<>("Z Offset", 0, -30000000, 30000000);
 
 	public BooleanSetting turnBedrockIntoStoneOrNetherrack = new BooleanSetting("Turn Bedrock into Stone/Netherack", false);
+
+	public BooleanSetting hideSignText = new BooleanSetting("Hide Sign Text", false);
+	public BooleanSetting hideMapContents = new BooleanSetting("Hide Map Contents", false);
+
 	CoordManager coordManager = null;
 	public StreamerModeModule() {
 		super("Streamer Mode", "Provides Utilities for streamers like offsetting your coordinates.", ModuleCategory.CLIENT);
@@ -41,7 +45,9 @@ public class StreamerModeModule extends ToggleableModule {
 
 		this.registerSettings(
 				hideCoordinates,
-				turnBedrockIntoStoneOrNetherrack
+				turnBedrockIntoStoneOrNetherrack,
+				hideSignText,
+				hideMapContents
 		);
 	}
 

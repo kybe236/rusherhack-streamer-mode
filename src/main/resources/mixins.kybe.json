@@ -5,6 +5,8 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BlockEntityInfo",
+    "IAbstractSignRenderer",
+    "IBlockRenderDispatcher",
     "IMinecraft",
     "IMixinBlockHitResult",
     "IMixinClientboundAddEntityPacket",
@@ -47,7 +49,9 @@
     "IMixinServerboundSetJigsawBlockPacket",
     "IMixinServerboundSetStructureBlockPacket",
     "IMixinServerboundSignUpdatePacket",
-    "MixinConnection",
-    "IBlockRenderDispatcher"
+    "MixinConnection"
+  ],
+  "client": [
+    "IClientLevel"
   ]
 }

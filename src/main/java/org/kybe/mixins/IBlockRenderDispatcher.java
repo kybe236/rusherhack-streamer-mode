@@ -1,5 +1,6 @@
 package org.kybe.mixins;
 
+import net.minecraft.client.renderer.MapRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
