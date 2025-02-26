@@ -22,6 +22,7 @@
     "IMixinClientboundLevelParticlesPacket",
     "IMixinClientboundLightUpdatePacket",
     "IMixinClientboundMoveEntityPacket",
+    "IMixinClientboundMoveVehiclePacket",
     "IMixinClientboundOpenSignEditorPacket",
     "IMixinClientboundPlayerLookAtPacket",
     "IMixinClientboundPlayerPositionPacket",
@@ -41,10 +42,10 @@
     "IMixinServerboundSetJigsawBlockPacket",
     "IMixinServerboundSetStructureBlockPacket",
     "IMixinServerboundSignUpdatePacket",
-    "IMixinClientboundMoveVehiclePacket",
     "MixinConnection"
   ],
   "client": [
+    "IBlockRenderDispatcher",
     "IMinecraft"
   ]
 }
