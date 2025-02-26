@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "BlockEntityInfo",
+    "IMapRenderer",
     "IMixinBlockHitResult",
     "IMixinClientboundAddEntityPacket",
     "IMixinClientboundAddExperienceOrbPacket",
@@ -46,7 +47,6 @@
   ],
   "client": [
     "IBlockRenderDispatcher",
-    "IClientLevel",
     "IMinecraft",
     "ISignRenderer"
   ]
