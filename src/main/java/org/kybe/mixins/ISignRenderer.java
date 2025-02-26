@@ -13,10 +13,10 @@ public class ISignRenderer {
 	@ModifyVariable(method = "renderSignText", at = @At(value = "HEAD"), argsOnly = true)
 	private SignText renderSignText(SignText value) {
 		if (StreamerModeModule.INSTANCE == null || !StreamerModeModule.INSTANCE.isToggled() || !StreamerModeModule.INSTANCE.hideSignText.getValue()) return value;
-		value = value.setMessage(0, Component.literal("CENSORED"));
-		value = value.setMessage(1, Component.literal("use code"));
-		value = value.setMessage(2, Component.literal("kybe for"));
-		value = value.setMessage(3, Component.literal("rusherhack"));
+		value = value.setMessage(0, Component.literal(""));
+		value = value.setMessage(1, Component.literal(""));
+		value = value.setMessage(2, Component.literal(""));
+		value = value.setMessage(3, Component.literal(""));
 		return value;
 	}
 }
