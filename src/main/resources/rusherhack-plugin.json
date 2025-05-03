@@ -1,5 +1,5 @@
 {
-  "Plugin-Class": "org.kybe.Main",
+  "Plugin-Class": "org.kybe.streamermode.Main",
   "Name": "${project.plugin_name}",
   "Version": "${project.plugin_version}",
   "Description": "Provides Streamer Utilities",
