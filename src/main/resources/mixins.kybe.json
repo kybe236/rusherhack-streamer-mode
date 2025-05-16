@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "org.kybe.streamermmode.mixins",
+  "package": "org.kybe.streamermode.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
     "org.kybe.streamermode.mixins.BlockEntityInfo",
