@@ -31,8 +31,8 @@ public class StreamerModeModule extends ToggleableModule {
 	public final BooleanSetting hideSignText = new BooleanSetting("Hide Sign Text", false);
 	public final BooleanSetting hideMap = new BooleanSetting("Hide Map Contents", false);
 
-	// <-- NEW BooleanSetting for ignoreFirstPosition
 	public final BooleanSetting ignoreFirstPosition = new BooleanSetting("Ignore First Player Position Packet", true);
+	boolean firstPositionSkipped = false;
 
 	public CoordManager coordManager = null;
 
@@ -48,7 +48,7 @@ public class StreamerModeModule extends ToggleableModule {
 				turnBedrockIntoStoneOrNetherrack,
 				hideSignText,
 				hideMap,
-				ignoreFirstPosition // register setting
+				ignoreFirstPosition
 		);
 	}
 
@@ -59,6 +59,7 @@ public class StreamerModeModule extends ToggleableModule {
 
 	public void disconnect() {
 		coordManager = null;
+		firstPositionSkipped = false;
 	}
 
 	private void initCoordManager(ClientboundPlayerPositionPacket packet) {
@@ -89,13 +90,11 @@ public class StreamerModeModule extends ToggleableModule {
 			return;
 		}
 
-		// Skip the first player position packet if the setting is enabled
-		if (ignoreFirstPosition.getValue() && packet instanceof ClientboundPlayerPositionPacket) {
-			ignoreFirstPosition.setValue(false); // disable after first skip
+		if (ignoreFirstPosition.getValue() && packet instanceof ClientboundPlayerPositionPacket && !firstPositionSkipped) {
+			firstPositionSkipped = true;
 			return;
 		}
 
-		// Static offset mode (no player packet needed)
 		if (coordManager == null && offsetMode.getValue() == OffsetMode.STATIC_OFFSET) {
 			initCoordManager(null);
 		}
@@ -103,8 +102,8 @@ public class StreamerModeModule extends ToggleableModule {
 		if (packet instanceof ClientboundBundlePacket bundle) {
 			if (coordManager == null && offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN) {
 				for (Packet<?> sub : bundle.subPackets()) {
-					if (ignoreFirstPosition.getValue() && sub instanceof ClientboundPlayerPositionPacket) {
-						ignoreFirstPosition.setValue(false);
+					if (ignoreFirstPosition.getValue() && sub instanceof ClientboundPlayerPositionPacket && !firstPositionSkipped) {
+						firstPositionSkipped = true;
 						continue;
 					}
 					if (sub instanceof ClientboundPlayerPositionPacket posPacket) {
