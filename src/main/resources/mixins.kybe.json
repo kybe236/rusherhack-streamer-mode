@@ -7,6 +7,7 @@
     "BlockEntityInfo",
     "IAbstractSignRenderer",
     "IBlockRenderDispatcher",
+    "IMapRenderer",
     "IMinecraft",
     "IMixinBlockHitResult",
     "IMixinClientboundAddEntityPacket",
@@ -23,10 +24,12 @@
     "IMixinClientboundInitializeBorderPacket",
     "IMixinClientboundLevelChunkPacketData",
     "IMixinClientboundLevelChunkWithLightPacket",
+    "IMixinClientboundLevelEventPacket",
     "IMixinClientboundLevelParticlesPacket",
     "IMixinClientboundLightUpdatePacket",
     "IMixinClientboundMoveEntityPacket",
     "IMixinClientboundMoveMinecartPacket",
+    "IMixinClientboundMoveVehiclePacket",
     "IMixinClientboundOpenSignEditorPacket",
     "IMixinClientboundPlayerLookAtPacket",
     "IMixinClientboundPlayerPositionPacket",
@@ -49,7 +52,6 @@
     "IMixinServerboundSetJigsawBlockPacket",
     "IMixinServerboundSetStructureBlockPacket",
     "IMixinServerboundSignUpdatePacket",
-    "MixinConnection",
-    "IMapRenderer"
+    "MixinConnection"
   ]
 }

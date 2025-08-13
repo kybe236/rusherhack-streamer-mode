@@ -12,42 +12,43 @@ import org.rusherhack.core.setting.EnumSetting;
 import org.rusherhack.core.setting.NullSetting;
 import org.rusherhack.core.setting.NumberSetting;
 
+import java.util.concurrent.ThreadLocalRandom;
 
 public class StreamerModeModule extends ToggleableModule {
 	public static StreamerModeModule INSTANCE;
-	public BooleanSetting hideCoordinates = new BooleanSetting("Hide Coordinates", false);
-	public EnumSetting<OffsetMode> offsetMode = new EnumSetting<>("Offset Mode", OffsetMode.STATIC_OFFSET);
-	public EnumSetting<OffsetRandom> offsetRandom = new EnumSetting<>("Offset Random", OffsetRandom.NOT);
-	public NullSetting hidden = new NullSetting("WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!", "WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!");
-	public NumberSetting<Integer> xOffset = new NumberSetting<>("X Offset", 0, -30000000, 30000000);
-	public NumberSetting<Integer> zOffset = new NumberSetting<>("Z Offset", 0, -30000000, 30000000);
 
-	public BooleanSetting turnBedrockIntoStoneOrNetherrack = new BooleanSetting("Turn Bedrock into Stone/Netherack", false);
+	public final BooleanSetting hideCoordinates = new BooleanSetting("Hide Coordinates", false);
+	public final EnumSetting<OffsetMode> offsetMode = new EnumSetting<>("Offset Mode", OffsetMode.STATIC_OFFSET);
+	public final EnumSetting<OffsetRandom> offsetRandom = new EnumSetting<>("Offset Random", OffsetRandom.NOT);
+	public final NullSetting hidden = new NullSetting(
+			"WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!",
+			"WARNING! Under this is X and Z offset which can be used too get your coordinates!!!!"
+	);
+	public final NumberSetting<Integer> xOffset = new NumberSetting<>("X Offset", 0, -30000000, 30000000);
+	public final NumberSetting<Integer> zOffset = new NumberSetting<>("Z Offset", 0, -30000000, 30000000);
 
-	public BooleanSetting hideSignText = new BooleanSetting("Hide Sign Text", false);
-	public BooleanSetting hideMap = new BooleanSetting("Hide Map Contents", false);
+	public final BooleanSetting turnBedrockIntoStoneOrNetherrack = new BooleanSetting("Turn Bedrock into Stone/Netherack", false);
+	public final BooleanSetting hideSignText = new BooleanSetting("Hide Sign Text", false);
+	public final BooleanSetting hideMap = new BooleanSetting("Hide Map Contents", false);
 
-	CoordManager coordManager = null;
+	// <-- NEW BooleanSetting for ignoreFirstPosition
+	public final BooleanSetting ignoreFirstPosition = new BooleanSetting("Ignore First Player Position Packet", true);
+
+	public CoordManager coordManager = null;
+
 	public StreamerModeModule() {
 		super("Streamer Mode", "Provides Utilities for streamers like offsetting your coordinates.", ModuleCategory.CLIENT);
 		INSTANCE = this;
 
-		hidden.addSubSettings(
-				xOffset,
-				zOffset
-		);
-
-		hideCoordinates.addSubSettings(
-				offsetMode,
-				offsetRandom,
-				hidden
-		);
+		hidden.addSubSettings(xOffset, zOffset);
+		hideCoordinates.addSubSettings(offsetMode, offsetRandom, hidden);
 
 		this.registerSettings(
 				hideCoordinates,
 				turnBedrockIntoStoneOrNetherrack,
 				hideSignText,
-				hideMap
+				hideMap,
+				ignoreFirstPosition // register setting
 		);
 	}
 
@@ -60,66 +61,78 @@ public class StreamerModeModule extends ToggleableModule {
 		coordManager = null;
 	}
 
+	private void initCoordManager(ClientboundPlayerPositionPacket packet) {
+		int baseX = xOffset.getValue();
+		int baseZ = zOffset.getValue();
+
+		if (offsetRandom.getValue() == OffsetRandom.EVERY_JOIN) {
+			baseX = ThreadLocalRandom.current().nextInt(-30000000, 30000001);
+			baseZ = ThreadLocalRandom.current().nextInt(-30000000, 30000001);
+			xOffset.setValue(baseX);
+			zOffset.setValue(baseZ);
+		}
+
+		if (offsetMode.getValue() == OffsetMode.STATIC_OFFSET) {
+			coordManager = new CoordManager(baseX, baseZ);
+		} else if (offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN && packet != null) {
+			double realX = packet.change().position().x;
+			double realZ = packet.change().position().z;
+			int offsetX = baseX - (int) realX;
+			int offsetZ = baseZ - (int) realZ;
+			coordManager = new CoordManager(offsetX, offsetZ);
+		}
+	}
+
 	public void packetReceived(Packet<?> packet) {
 		if (!this.isToggled()) {
-			this.coordManager = null;
+			coordManager = null;
 			return;
 		}
-		if (this.coordManager == null && this.offsetMode.getValue() == OffsetMode.STATIC_OFFSET) {
-			if (this.offsetRandom.getValue() == OffsetRandom.NOT) {
-				this.coordManager = new CoordManager(xOffset.getValue(), zOffset.getValue());
-			} else if (this.offsetRandom.getValue() == OffsetRandom.EVERY_JOIN) {
-				int x = (int) (Math.random() * 30000000);
-				int z = (int) (Math.random() * 30000000);
-				this.xOffset.setValue(x);
-				this.zOffset.setValue(z);
-				this.coordManager = new CoordManager(x, z);
-			}
+
+		// Skip the first player position packet if the setting is enabled
+		if (ignoreFirstPosition.getValue() && packet instanceof ClientboundPlayerPositionPacket) {
+			ignoreFirstPosition.setValue(false); // disable after first skip
+			return;
 		}
-		if (packet instanceof ClientboundBundlePacket packet1) {
-			for (Packet<? super ClientGamePacketListener> p : packet1.subPackets()) {
-				if (this.coordManager == null && this.offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN && p instanceof ClientboundPlayerPositionPacket packet2) {
-					if (this.offsetRandom.getValue() == OffsetRandom.NOT) {
-						this.coordManager = new CoordManager((int) -(packet2.change().position().x) + xOffset.getValue(), (int) -(packet2.change().position().z) + zOffset.getValue());
-					} else if (this.offsetRandom.getValue() == OffsetRandom.EVERY_JOIN) {
-						int x = (int) (Math.random() * 30000000);
-						int z = (int) (Math.random() * 30000000);
-						this.xOffset.setValue(x);
-						this.zOffset.setValue(z);
-						this.coordManager = new CoordManager(x + (int) -(packet2.change().position().x), z + (int) -(packet2.change().position().z));
+
+		// Static offset mode (no player packet needed)
+		if (coordManager == null && offsetMode.getValue() == OffsetMode.STATIC_OFFSET) {
+			initCoordManager(null);
+		}
+
+		if (packet instanceof ClientboundBundlePacket bundle) {
+			if (coordManager == null && offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN) {
+				for (Packet<?> sub : bundle.subPackets()) {
+					if (ignoreFirstPosition.getValue() && sub instanceof ClientboundPlayerPositionPacket) {
+						ignoreFirstPosition.setValue(false);
+						continue;
+					}
+					if (sub instanceof ClientboundPlayerPositionPacket posPacket) {
+						initCoordManager(posPacket);
+						break;
 					}
 				}
-				if (this.coordManager == null) {
-					return;
-				}
-				Clientbound.handle(coordManager, p);
 			}
-			return;
-		}
-		if (this.coordManager == null && this.offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN && packet instanceof ClientboundPlayerPositionPacket packet2) {
-			if (this.offsetRandom.getValue() == OffsetRandom.NOT) {
-				this.coordManager = new CoordManager((int) -(packet2.change().position().x) + xOffset.getValue(), (int) -(packet2.change().position().z) + zOffset.getValue());
-			} else if (this.offsetRandom.getValue() == OffsetRandom.EVERY_JOIN) {
-				int x = (int) (Math.random() * 30000000);
-				int z = (int) (Math.random() * 30000000);
-				this.xOffset.setValue(x);
-				this.zOffset.setValue(z);
-				this.coordManager = new CoordManager(x + (int) -(packet2.change().position().x), z + (int) -(packet2.change().position().z));
-			}
-		}
-		if (coordManager == null) {
-			return;
-		}
-		Clientbound.handle(coordManager, (Packet<? super ClientGamePacketListener>) packet);
 
+			if (coordManager == null) return;
+
+			for (Packet<? super ClientGamePacketListener> sub : bundle.subPackets()) {
+				Clientbound.handle(coordManager, sub);
+			}
+			return;
+		}
+
+		if (coordManager == null && offsetMode.getValue() == OffsetMode.CENTERED_OFFSET_ON_JOIN
+				&& packet instanceof ClientboundPlayerPositionPacket posPacket) {
+			initCoordManager(posPacket);
+		}
+
+		if (coordManager == null) return;
+		Clientbound.handle(coordManager, (Packet<? super ClientGamePacketListener>) packet);
 	}
 
 	public void packetSend(Packet<?> packet) {
-		if (!this.isToggled()) {
-			this.coordManager = null;
-			return;
-		}
-		if (this.coordManager == null) return;
+		if (!this.isToggled() || coordManager == null) return;
 		Serverbound.handle(coordManager, packet);
 	}
 

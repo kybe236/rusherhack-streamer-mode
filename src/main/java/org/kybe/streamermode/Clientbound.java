@@ -41,6 +41,9 @@ public class Clientbound {
 			case ClientboundChunksBiomesPacket packet1 -> {
 				clientboundChunksBiomesPacket(packet1, manager);
 			}
+			case ClientboundDamageEventPacket packet1 -> {
+				clientboundDamageEventPacket(packet1, manager);
+			}
 			case ClientboundEntityPositionSyncPacket packet1 -> {
 				clientboundEntityPositionSyncPacket(packet1, manager);
 			}
@@ -53,14 +56,41 @@ public class Clientbound {
 			case ClientboundLevelChunkWithLightPacket packet1 -> {
 				clientboundLevelChunkWithLightPacket(packet1, manager);
 			}
+			case ClientboundInitializeBorderPacket packet1 -> {
+				clientboundInitializeBorderPacket(packet1, manager);
+			}
+			case ClientboundLevelEventPacket packet1 -> {
+				clientboundLevelEventPacket(packet1, manager);
+			}
+			case ClientboundLevelParticlesPacket packet1 -> {
+				clientboundLevelParticlesPacket(packet1, manager);
+			}
 			case ClientboundLightUpdatePacket packet1 -> {
 				clientboundLightUpdatePacket(packet1, manager);
+			}
+			case ClientboundMoveEntityPacket packet1 -> {
+				//clientboundMoveEntityPacket(packet1, manager);
+			}
+			case ClientboundMoveMinecartPacket packet1 -> {
+				clientboundMoveMinecartPacket(packet1, manager);
+			}
+			case ClientboundMoveVehiclePacket packet1 -> {
+				clientboundMoveVehiclePacket(packet1, manager);
 			}
 			case ClientboundOpenSignEditorPacket packet1 -> {
 				clientboundOpenSignEditorPacket(packet1, manager);
 			}
 			case ClientboundPlayerLookAtPacket packet1 -> {
 				clientboundPlayerLookAtPacket(packet1, manager);
+			}
+			case ClientboundPlayerPositionPacket packet1 -> {
+				clientboundPlayerPositionPacket(packet1, manager);
+			}
+			case ClientboundSectionBlocksUpdatePacket packet1 -> {
+				clientboundSectionBlocksUpdatePacket(packet1, manager);
+			}
+			case ClientboundSetBorderCenterPacket packet1 -> {
+				clientboundSetBorderCenterPacket(packet1, manager);
 			}
 			case ClientboundSetChunkCacheCenterPacket packet1 -> {
 				clientboundSetChunkCacheCenterPacket(packet1, manager);
@@ -74,46 +104,10 @@ public class Clientbound {
 			case ClientboundTeleportEntityPacket packet1 -> {
 				clientboundTeleportEntityPacket(packet1, manager);
 			}
-			case ClientboundLevelParticlesPacket packet1 -> {
-				clientboundLevelParticlesPacket(packet1, manager);
-			}
-			case ClientboundPlayerPositionPacket packet1 -> {
-				clientboundPlayerPositionPacket(packet1, manager);
-			}
-			case ClientboundDamageEventPacket packet1 -> {
-				clientboundDamageEventPacket(packet1, manager);
-			}
-			case ClientboundSectionBlocksUpdatePacket packet1 -> {
-				clientboundSectionBlocksUpdatePacket(packet1, manager);
-			}
-			case ClientboundSetBorderCenterPacket packet1 -> {
-				clientboundSetBorderCenterPacket(packet1, manager);
-			}
-			case ClientboundMoveMinecartPacket packet1 -> {
-				clientboundMoveMinecartPacket(packet1, manager);
-			}
-			case ClientboundInitializeBorderPacket packet1 -> {
-				clientboundInitializeBorderPacket(packet1, manager);
-			}
+
 			default -> {
 			}
 		}
-	}
-
-	public static void clientboundMoveMinecartPacket(ClientboundMoveMinecartPacket packet, CoordManager coordManager) {
-		List<NewMinecartBehavior.MinecartStep> steps = packet.lerpSteps();
-		for (NewMinecartBehavior.MinecartStep step : steps) {
-			Vec3 pos = step.position();
-			pos = coordManager.prepareReceiveVec3(pos);
-			((IMixinMinecartStep) (Object) step).setPosition(pos);
-		}
-		((IMixinClientboundMoveMinecartPacket) (Object) packet).setLerpSteps(steps);
-	}
-
-	public static void clientboundSectionBlocksUpdatePacket(ClientboundSectionBlocksUpdatePacket packet, CoordManager coordManager) {
-		SectionPos pos = ((IMixinClientboundSectionBlocksUpdatePacket) packet).getSectionPos();
-		pos = coordManager.prepareReceiveSectionPos(pos);
-		((IMixinClientboundSectionBlocksUpdatePacket) packet).setSectionPos(pos);
 	}
 
 	public static void clientboundAddEntityPacket(ClientboundAddEntityPacket packet, CoordManager coordManager) {
@@ -128,7 +122,6 @@ public class Clientbound {
 		Vec3 pos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
 		pos = coordManager.prepareReceiveVec3(pos);
 		((IMixinClientboundAddExperienceOrbPacket) packet).setX(pos.x);
-		((IMixinClientboundAddExperienceOrbPacket) packet).setY(pos.y);
 		((IMixinClientboundAddExperienceOrbPacket) packet).setZ(pos.z);
 	}
 
@@ -205,6 +198,22 @@ public class Clientbound {
 		((IMixinClientboundLevelChunkWithLightPacket) packet).setZ(z);
 	}
 
+
+	public static void clientboundInitializeBorderPacket(ClientboundInitializeBorderPacket packet, CoordManager coordManager) {
+		double x = packet.getNewCenterX();
+		double z = packet.getNewCenterZ();
+		x = coordManager.prepareReceiveX(x);
+		z = coordManager.prepareReceiveZ(z);
+		((IMixinClientboundInitializeBorderPacket) packet).setNewCenterX(x);
+		((IMixinClientboundInitializeBorderPacket) packet).setNewCenterZ(z);
+	}
+
+	public static void clientboundLevelEventPacket(ClientboundLevelEventPacket packet, CoordManager coordManager) {
+		BlockPos pos = packet.getPos();
+		pos = coordManager.prepareReceiveBlockPos(pos);
+		((IMixinClientboundLevelEventPacket) packet).setPos(pos);
+	}
+
 	public static void clientboundLevelParticlesPacket(ClientboundLevelParticlesPacket packet, CoordManager coordManager) {
 		Vec3 pos = new Vec3(packet.getX(), packet.getY(), packet.getZ());
 		pos = coordManager.prepareReceiveVec3(pos);
@@ -221,6 +230,31 @@ public class Clientbound {
 		((IMixinClientboundLightUpdatePacket) packet).setZ(z);
 	}
 
+	//TODO: ClientboundMoveEntityPacket
+	public static void clientboundMoveEntityPacket(ClientboundMoveEntityPacket packet, CoordManager coordManager) {
+		Vec3 delta = new Vec3(packet.getXa(), packet.getYa(), packet.getZa());
+		delta = coordManager.prepareReceiveVec3(delta);
+		((IMixinClientboundMoveEntityPacket) packet).setXa((short) delta.x);
+		((IMixinClientboundMoveEntityPacket) packet).setZa((short) delta.z);
+	}
+
+
+	public static void clientboundMoveMinecartPacket(ClientboundMoveMinecartPacket packet, CoordManager coordManager) {
+		List<NewMinecartBehavior.MinecartStep> steps = packet.lerpSteps();
+		for (NewMinecartBehavior.MinecartStep step : steps) {
+			Vec3 pos = step.position();
+			pos = coordManager.prepareReceiveVec3(pos);
+			((IMixinMinecartStep) (Object) step).setPosition(pos);
+		}
+		((IMixinClientboundMoveMinecartPacket) (Object) packet).setLerpSteps(steps);
+	}
+
+	public static void clientboundMoveVehiclePacket(ClientboundMoveVehiclePacket packet, CoordManager coordManager) {
+		Vec3 pos = packet.position();
+		pos = coordManager.prepareReceiveVec3(pos);
+		((IMixinClientboundMoveVehiclePacket) (Object) packet).setPosition(pos);
+	}
+
 	public static void clientboundOpenSignEditorPacket(ClientboundOpenSignEditorPacket packet, CoordManager coordManager) {
 		BlockPos pos = packet.getPos();
 		pos = coordManager.prepareReceiveBlockPos(pos);
@@ -235,6 +269,23 @@ public class Clientbound {
 		((IMixinClientboundPlayerLookAtPacket) packet).setZ(pos.z);
 	}
 
+	public static void clientboundPlayerPositionPacket(ClientboundPlayerPositionPacket packet, CoordManager coordManager) {
+		PositionMoveRotation change = ((IMixinClientboundPlayerPositionPacket) (Object) packet).getChange();
+		double x = change.position().x;
+		double z = change.position().z;
+		x = coordManager.prepareReceiveX(x);
+		z = coordManager.prepareReceiveZ(z);
+
+		((IMixinPositionMoveRotation) (Object) change).setPosition(new Vec3(x, change.position().y, z));
+		((IMixinClientboundPlayerPositionPacket) (Object) packet).setChange(change);
+	}
+
+	public static void clientboundSectionBlocksUpdatePacket(ClientboundSectionBlocksUpdatePacket packet, CoordManager coordManager) {
+		SectionPos pos = ((IMixinClientboundSectionBlocksUpdatePacket) packet).getSectionPos();
+		pos = coordManager.prepareReceiveSectionPos(pos);
+		((IMixinClientboundSectionBlocksUpdatePacket) packet).setSectionPos(pos);
+	}
+
 	public static void clientboundSetBorderCenterPacket(ClientboundSetBorderCenterPacket packet, CoordManager coordManager) {
 		double x = packet.getNewCenterX();
 		double z = packet.getNewCenterZ();
@@ -242,15 +293,6 @@ public class Clientbound {
 		z = coordManager.prepareReceiveZ(z);
 		((IMixinClientboundSetBorderCenterPacket) packet).setNewCenterX(x);
 		((IMixinClientboundSetBorderCenterPacket) packet).setNewCenterZ(z);
-	}
-
-	public static void clientboundInitializeBorderPacket(ClientboundInitializeBorderPacket packet, CoordManager coordManager) {
-		double x = packet.getNewCenterX();
-		double z = packet.getNewCenterZ();
-		x = coordManager.prepareReceiveX(x);
-		z = coordManager.prepareReceiveZ(z);
-		((IMixinClientboundInitializeBorderPacket) packet).setNewCenterX(x);
-		((IMixinClientboundInitializeBorderPacket) packet).setNewCenterZ(z);
 	}
 
 	public static void clientboundSetChunkCacheCenterPacket(ClientboundSetChunkCacheCenterPacket packet, CoordManager coordManager) {
@@ -284,16 +326,5 @@ public class Clientbound {
 		x = coordManager.prepareReceiveX(x);
 		z = coordManager.prepareReceiveZ(z);
 		((IMixinPositionMoveRotation) change.position()).setPosition(new Vec3(x, change.position().y, z));
-	}
-
-	public static void clientboundPlayerPositionPacket(ClientboundPlayerPositionPacket packet, CoordManager coordManager) {
-		PositionMoveRotation change = ((IMixinClientboundPlayerPositionPacket) (Object) packet).getChange();
-		double x = change.position().x;
-		double z = change.position().z;
-		x = coordManager.prepareReceiveX(x);
-		z = coordManager.prepareReceiveZ(z);
-
-		((IMixinPositionMoveRotation) (Object) change).setPosition(new Vec3(x, change.position().y, z));
-		((IMixinClientboundPlayerPositionPacket) (Object) packet).setChange(change);
 	}
 }

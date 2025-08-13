@@ -5,35 +5,30 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.phys.Vec3;
 
+/**
+ * Utility for offsetting Minecraft coordinates by a fixed chunk-aligned X/Z offset.
+ * Supports both "send" (subtract offset) and "receive" (add offset) transformations.
+ */
 public class CoordManager {
-	private int x, z;
+	private int x; // chunk-aligned X offset in blocks
+	private int z; // chunk-aligned Z offset in blocks
 
 	public CoordManager(int x, int z) {
-		this.x = (int) Math.floor(x / 16.0) * 16;
-		this.z = (int) Math.floor(z / 16.0) * 16;
+		// Align to nearest lower chunk boundary (multiple of 16)
+		this.x = x & ~15;
+		this.z = z & ~15;
 	}
 
-	public int getX() {
-		return x;
-	}
+	public int getX() { return x; }
+	public void setX(int x) { this.x = x & ~15; }
 
-	public void setX(int x) {
-		this.x = x;
-	}
+	public int getZ() { return z; }
+	public void setZ(int z) { this.z = z & ~15; }
 
-	public int getZ() {
-		return z;
-	}
-
-	public void setZ(int z) {
-		this.z = z;
-	}
+	/* ===================== CHUNK POS ===================== */
 
 	public ChunkPos prepareReceiveChunkPos(ChunkPos pos) {
-		return new ChunkPos(
-				prepareReceiveChunkX(pos.x),
-				prepareReceiveChunkZ(pos.z)
-		);
+		return new ChunkPos(prepareReceiveChunkX(pos.x), prepareReceiveChunkZ(pos.z));
 	}
 
 	public int prepareReceiveChunkX(int chunkX) {
@@ -44,73 +39,45 @@ public class CoordManager {
 		return chunkZ + (this.z >> 4);
 	}
 
+	/* ===================== SECTION POS ===================== */
+
 	public SectionPos prepareReceiveSectionPos(SectionPos sectionPos) {
-		return sectionPos.offset((int) Math.floor(this.x / 16.0), 0, (int) Math.floor(this.z / 16.0));
+		return sectionPos.offset(this.x >> 4, 0, this.z >> 4);
 	}
 
-	// Adjust the block X position
-	public int prepareReceiveX(int blockX) {
-		return blockX + this.x;
-	}
+	/* ===================== BLOCK X/Z (int) ===================== */
 
-	// Adjust the block Z position
-	public int prepareReceiveZ(int blockZ) {
-		return blockZ + this.z;
-	}
+	public int prepareReceiveX(int blockX) { return blockX + this.x; }
+	public int prepareReceiveZ(int blockZ) { return blockZ + this.z; }
 
-	// Adjust the block X position for double values (e.g., for vectors)
-	public double prepareReceiveX(double blockX) {
-		return blockX + this.x;
-	}
+	public int prepareSendX(int blockX) { return blockX - this.x; }
+	public int prepareSendZ(int blockZ) { return blockZ - this.z; }
 
-	// Adjust the block Z position for double values (e.g., for vectors)
-	public double prepareReceiveZ(double blockZ) {
-		return blockZ + this.z;
-	}
+	/* ===================== BLOCK X/Z (double) ===================== */
 
-	// Adjust the block X position before sending
-	public int prepareSendX(int blockX) {
-		return blockX - this.x;
-	}
+	public double prepareReceiveX(double blockX) { return blockX + this.x; }
+	public double prepareReceiveZ(double blockZ) { return blockZ + this.z; }
 
-	// Adjust the block Z position before sending
-	public int prepareSendZ(int blockZ) {
-		return blockZ - this.z;
-	}
+	public double prepareSendX(double blockX) { return blockX - this.x; }
+	public double prepareSendZ(double blockZ) { return blockZ - this.z; }
 
-	// Prepare BlockPos for sending: adjust X and Z while keeping Y the same
+	/* ===================== BLOCK POS ===================== */
+
 	public BlockPos prepareSendBlockPos(BlockPos pos) {
-		return new BlockPos(
-				prepareSendX(pos.getX()),
-				pos.getY(),
-				prepareSendZ(pos.getZ())
-		);
+		return new BlockPos(prepareSendX(pos.getX()), pos.getY(), prepareSendZ(pos.getZ()));
 	}
 
-	// Prepare BlockPos for receiving: adjust X and Z while keeping Y the same
 	public BlockPos prepareReceiveBlockPos(BlockPos pos) {
-		return new BlockPos(
-				prepareReceiveX(pos.getX()),
-				pos.getY(),
-				prepareReceiveZ(pos.getZ())
-		);
+		return new BlockPos(prepareReceiveX(pos.getX()), pos.getY(), prepareReceiveZ(pos.getZ()));
 	}
+
+	/* ===================== VEC3 ===================== */
 
 	public Vec3 prepareSendVec3(Vec3 vec3) {
-		return new Vec3(
-				vec3.x - this.x,
-				vec3.y,
-				vec3.z - this.z
-		);
+		return new Vec3(prepareSendX(vec3.x), vec3.y, prepareSendZ(vec3.z));
 	}
 
-	// Prepare Vec3 for receiving: adjust X and Z (note: no truncation of doubles here)
 	public Vec3 prepareReceiveVec3(Vec3 vec3) {
-		return new Vec3(
-				prepareReceiveX(vec3.x),  // No casting to int for better precision
-				vec3.y,
-				prepareReceiveZ(vec3.z)   // No casting to int for better precision
-		);
+		return new Vec3(prepareReceiveX(vec3.x), vec3.y, prepareReceiveZ(vec3.z));
 	}
-
 }

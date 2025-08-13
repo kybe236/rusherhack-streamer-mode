@@ -12,37 +12,43 @@ import org.rusherhack.client.api.accessors.packet.IMixinServerboundMoveVehiclePa
 
 public class Serverbound {
 	public static void handle(CoordManager coordManager, Packet<?> packet) {
-		if (packet instanceof ServerboundBlockEntityTagQueryPacket packet1) {
-			serverboundBlockEntityTagQueryPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundJigsawGeneratePacket packet1) {
-			serverboundJigsawGeneratePacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundMovePlayerPacket.Pos packet1) {
-			serverboundMovePlayerPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundMovePlayerPacket.PosRot packet1) {
-			serverboundMovePlayerPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundMoveVehiclePacket packet1) {
-			serverboundMoveVehiclePacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundPickItemFromBlockPacket packet1) {
-			serverboundPickItemFromBlockPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundSetCommandBlockPacket packet1) {
-			serverboundSetCommandBlockPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundSetJigsawBlockPacket packet1) {
-			serverboundSetJigsawBlockPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundSetStructureBlockPacket packet1) {
-			serverboundSetStructureBlockPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundSignUpdatePacket packet1) {
-			serverboundSignUpdatePacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundUseItemOnPacket packet1) {
-			serverboundUseItemOnPacket(packet1, coordManager);
-		} else if (packet instanceof ServerboundPlayerActionPacket packet1) {
-			serverboundPlayerActionPacket(packet1, coordManager);
+		switch (packet) {
+			case ServerboundBlockEntityTagQueryPacket packet1 -> {
+				serverboundBlockEntityTagQueryPacket(packet1, coordManager);
+			}
+			case ServerboundJigsawGeneratePacket packet1 -> {
+				serverboundJigsawGeneratePacket(packet1, coordManager);
+			}
+			case ServerboundMovePlayerPacket packet1 -> {
+				serverboundMovePlayerPacket(packet1, coordManager);
+			}
+			case ServerboundMoveVehiclePacket packet1 -> {
+				serverboundMoveVehiclePacket(packet1, coordManager);
+			}
+			case ServerboundPickItemFromBlockPacket packet1 -> {
+				serverboundPickItemFromBlockPacket(packet1, coordManager);
+			}
+			case ServerboundPlayerActionPacket packet1 -> {
+				serverboundPlayerActionPacket(packet1, coordManager);
+			}
+			case ServerboundSetCommandBlockPacket packet1 -> {
+				serverboundSetCommandBlockPacket(packet1, coordManager);
+			}
+			case ServerboundSetJigsawBlockPacket packet1 -> {
+				serverboundSetJigsawBlockPacket(packet1, coordManager);
+			}
+			case ServerboundSetStructureBlockPacket packet1 -> {
+				serverboundSetStructureBlockPacket(packet1, coordManager);
+			}
+			case ServerboundSignUpdatePacket packet1 -> {
+				serverboundSignUpdatePacket(packet1, coordManager);
+			}
+			case ServerboundUseItemOnPacket packet1 -> {
+				serverboundUseItemOnPacket(packet1, coordManager);
+			}
+			default -> {
+			}
 		}
-	}
-
-	public static void serverboundPlayerActionPacket(ServerboundPlayerActionPacket packet, CoordManager coordManager) {
-		BlockPos pos = packet.getPos();
-		pos = coordManager.prepareSendBlockPos(pos);
-		((IMixinServerboundPlayerActionPacket) packet).setPos(pos);
 	}
 
 	public static void serverboundBlockEntityTagQueryPacket(ServerboundBlockEntityTagQueryPacket packet, CoordManager coordManager) {
@@ -74,6 +80,12 @@ public class Serverbound {
 		BlockPos pos = packet.pos();
 		pos = coordManager.prepareSendBlockPos(pos);
 		((IMixinServerboundPickItemFromBlockPacket) (Object) packet).setPos(pos);
+	}
+
+	public static void serverboundPlayerActionPacket(ServerboundPlayerActionPacket packet, CoordManager coordManager) {
+		BlockPos pos = packet.getPos();
+		pos = coordManager.prepareSendBlockPos(pos);
+		((IMixinServerboundPlayerActionPacket) packet).setPos(pos);
 	}
 
 	public static void serverboundSetCommandBlockPacket(ServerboundSetCommandBlockPacket packet, CoordManager coordManager) {
