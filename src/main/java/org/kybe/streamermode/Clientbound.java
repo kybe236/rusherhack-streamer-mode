@@ -325,6 +325,6 @@ public class Clientbound {
 		double z = change.position().z;
 		x = coordManager.prepareReceiveX(x);
 		z = coordManager.prepareReceiveZ(z);
-		((IMixinPositionMoveRotation) change.position()).setPosition(new Vec3(x, change.position().y, z));
+		((IMixinPositionMoveRotation) (Object) packet).setPosition(new Vec3(x, change.position().y, z));
 	}
 }
