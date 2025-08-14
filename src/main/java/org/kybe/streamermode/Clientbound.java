@@ -230,15 +230,6 @@ public class Clientbound {
 		((IMixinClientboundLightUpdatePacket) packet).setZ(z);
 	}
 
-	//TODO: ClientboundMoveEntityPacket
-	public static void clientboundMoveEntityPacket(ClientboundMoveEntityPacket packet, CoordManager coordManager) {
-		Vec3 delta = new Vec3(packet.getXa(), packet.getYa(), packet.getZa());
-		delta = coordManager.prepareReceiveVec3(delta);
-		((IMixinClientboundMoveEntityPacket) packet).setXa((short) delta.x);
-		((IMixinClientboundMoveEntityPacket) packet).setZa((short) delta.z);
-	}
-
-
 	public static void clientboundMoveMinecartPacket(ClientboundMoveMinecartPacket packet, CoordManager coordManager) {
 		List<NewMinecartBehavior.MinecartStep> steps = packet.lerpSteps();
 		for (NewMinecartBehavior.MinecartStep step : steps) {
